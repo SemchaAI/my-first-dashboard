@@ -1,26 +1,207 @@
 @import "tailwindcss";
 
 :root {
+  --sky: #C3EBFA;
+  --skyLight: #EDF9FD;
+  --purple: #CFCEFF;
+  --purpleLight: #F1F0FF;
+  --purple-accent: #ad46ff;
+  --yellow: #FAE27C;
+  --yellowLight: #FEFCE8;
+
+  --success: #00a63e;
+  --warning: #d08700;
+  --danger: #e7000b;
+
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #F3F5F7;
+
+  --text-primary:#6a7282 ;/* gray 500 */
+  --text-secondary: #99a1af; /* gray 400 */
+  --text-highlight: #111827;
+
+  --border:#F3F1F1;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @theme inline {
+  /* Background Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+
+  /*Action Colors */
+  /* --color-action-disabled: var(--action-disabled);
+  --color-action-disabled-bg: var(--action-disabled-bg); */
+
+  /* Primary Colors */
+  --color-primary: var(--sky);
+  --color-primary-highlight: var(--skyLight);
+
+  /* Secondary Colors */
+  --color-secondary: var(--purple);
+  --color-secondary-accent: var(--purple-accent);
+  --color-secondary-highlight: var(--purpleLight);
+
+  /* Tertiary Colors */
+  --color-tertiary: var(--yellow);
+  --color-tertiary-highlight: var(--yellowLight);
+
+  /* Feedback Colors */
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+
+  /* Border Colors */
+  --color-border: var(--border);
+
+  /* Text Colors */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-highlight: var(--text-highlight);
+
+  /* Font Families */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@utility once {
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@layer components {
+  /* react calendar */
+  .custom-calendar {
+    @apply w-full bg-background text-text-highlight rounded-md border-none;
+  }
+  .react-calendar__navigation{
+    @apply flex h-11 mb-4 font-semibold transition-colors 
+  }
+  .react-calendar__navigation__arrow {
+    @apply min-w-11 cursor-pointer hover:bg-primary
+  }
+  .react-calendar__navigation__label{
+    @apply grow cursor-pointer hover:bg-primary
+  }
+
+
+  .react-calendar__month-view__weekdays{
+    @apply flex flex-nowrap  text-center uppercase font-semibold text-sm leading-3 text-text-highlight
+  }
+  .react-calendar__month-view__weekdays__weekday{
+    @apply p-1.5
+  }
+  .react-calendar__month-view__days__day--weekend{
+    @apply text-danger
+  }
+  .react-calendar__month-view__days__day--neighboringMonth{
+    @apply text-text-primary
+  }
+
+
+  .react-calendar__tile {
+    @apply p-2 transition-colors duration-200 rounded-md hover:bg-primary;
+  }
+  .react-calendar__tile--active {
+    @apply !bg-secondary text-white font-bold;
+  }
+  .react-calendar__tile--now {
+    @apply bg-tertiary
+  }
+  /* react big calendar */
+  .rbc-toolbar{
+    @apply !flex !items-center !justify-between
+  }
+  .rbc-toolbar button {
+    @apply !py-1 !px-2 !text-text-primary !text-center !border-none !rounded-sm !cursor-pointer !shadow-none !bg-primary !transition-colors hover:!bg-secondary
+  }
+  .rbc-toolbar button.rbc-active {
+    @apply !bg-tertiary
+  }
+  .rbc-toolbar-label{
+    @apply !flex grow justify-end pr-2 font-bold text-text-highlight
+  }
+  .rbc-btn-group{
+    @apply !flex !gap-1 !border-none 
+  }
+  .rbc-time-view {
+    @apply !border-border;
+  }
+  .rbc-time-header {
+    @apply !hidden
+  }
+  .rbc-time-content {
+    @apply !border-none
+  }
+  .rbc-time-gutter.rbc-time-column {
+    @apply !text-xs !leading-3 !text-text-highlight
+  }
+  
+  .rbc-time-gutter.rbc-time-column .rbc-timeslot-group {
+    @apply !py-0 !px-[10px]
+  }
+  .rbc-timeslot-group {
+    @apply !bg-[#f7fdff] !min-h-20
+  }
+  
+  .rbc-day-slot {
+    @apply !text-sm !leading-3.5
+  }
+
+  .rbc-event {
+    @apply !border-none !text-text-highlight !p-[10px] md:!my-[10px] !mx-[5px] !w-full first:!bg-primary nth-[2n]:!bg-secondary nth-[3n]:!bg-tertiary nth-[4n]:!bg-[#ffc4f4] nth-[5n]:!bg-primary
+  }
+  
+  .rbc-event-label{
+    @apply text-text-primary !mb-1
+  }
+  /* rbc agenda */
+  .rbc-agenda-view{
+    @apply !flex-1
+  }
+  .rbc-agenda-time-cell{
+    @apply !border-none
+  }
+  .rbc-header{
+    @apply text-text-highlight bg-primary
+  }
+  .rbc-agenda-date-cell{
+    @apply text-text-highlight bg-primary
+  }
+  /* .rbc-agenda-time-cell{
+    @apply  bg-secondary
+  }
+  .rbc-agenda-event-cell{
+    @apply bg-tertiary
+  } */
+}
+@layer base {
+  input:-webkit-autofill,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:focus {
+    caret-color: transparent;
+    -webkit-box-shadow: 0 0 0 1000px var(--background) inset;
+    -webkit-text-fill-color: var(--text-primary);
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  /* For Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
   }
 }
 
 body {
   background: var(--background);
-  color: var(--foreground);
+  color: var(--text-primary);
   font-family: Arial, Helvetica, sans-serif;
 }

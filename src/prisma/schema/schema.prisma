@@ -1,0 +1,12 @@
+// prisma/schema.prisma
+// Only needed to point to the schema folder
+// prisma CLI will detect the rest
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["prismaSchemaFolder"]
+}

@@ -1,0 +1,1 @@
+export { paginatePrisma } from "./paginatePrisma";
