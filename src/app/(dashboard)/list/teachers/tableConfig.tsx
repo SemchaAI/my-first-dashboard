@@ -56,7 +56,7 @@ const renderRow = (item: TeacherList, role: Role) => (
       />
       <div className="flex flex-col">
         <h3 className="font-semibold">{item.name}</h3>
-        <p className="text-xs text-gray-500">{item?.email}</p>
+        <p className="text-xs text-gray-500">{item.user.email}</p>
       </div>
     </td>
     <td className="hidden px-2 py-0.5 md:table-cell">{item.id}</td>
@@ -80,11 +80,6 @@ const renderRow = (item: TeacherList, role: Role) => (
           <button className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-secondary">
             <Trash size={16} className="stroke-background" />
           </button>
-          // <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple">
-          //   <Image src="/delete.png" alt="" width={16} height={16} />
-          // </button>
-          // <FormModal table="teacher" type="delete" id={item.id}/>
-          // <span>FormModal</span>
         )}
       </div>
     </td>
