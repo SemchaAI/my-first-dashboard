@@ -6,9 +6,12 @@ import type {
   Exam,
   Lesson,
   Parent,
+  Result,
+  Role,
   Student,
   Subject,
   Teacher,
+  User,
 } from "@prisma/client";
 type AnnouncementList = Announcement & {
   class: { name: Class["name"] } | null;
@@ -34,10 +37,63 @@ type LessonList = Lesson & {
   class: { name: Class["name"] };
   teacher: { name: Teacher["name"]; surname: Teacher["surname"] };
 };
-type ParentList = Parent & { students: Student[] };
-type StudentList = Student & { class: Class };
+type ParentList = Parent & {
+  students: Student[];
+  user: { email: User["email"]; username: User["username"] };
+};
+type StudentList = Student & {
+  class: Class;
+  user: { username: User["username"]; avatar: User["avatar"] };
+};
 type SubjectList = Subject & { teachers: Teacher[] };
-type TeacherList = Teacher & { subjects: Subject[]; classes: Class[] };
+type TeacherList = Teacher & {
+  subjects: Subject[];
+  classes: Class[];
+  user: { username: User["username"]; email: User["email"] };
+};
+type ResultList = {
+  id: number;
+  title: string;
+  studentName: string;
+  studentSurname: string;
+  teacherName: string;
+  teacherSurname: string;
+  score: number;
+  className: string;
+  startTime: Date;
+};
+type TResult = Result & {
+  student: {
+    name: Student["name"];
+    surname: Student["surname"];
+  };
+  exam:
+    | (Exam & {
+        lesson: {
+          teacher: {
+            name: Teacher["name"];
+            surname: Teacher["surname"];
+          };
+          class: {
+            name: Class["name"];
+          };
+        };
+      })
+    | null;
+  assignment:
+    | (Assignment & {
+        lesson: {
+          teacher: {
+            name: Teacher["name"];
+            surname: Teacher["surname"];
+          };
+          class: {
+            name: Class["name"];
+          };
+        };
+      })
+    | null;
+};
 
 type TableRow =
   | AnnouncementList
@@ -49,7 +105,16 @@ type TableRow =
   | ParentList
   | StudentList
   | SubjectList
-  | TeacherList;
+  | TeacherList
+  | ResultList;
+
+//----------------------------------
+interface IColumn {
+  header: string;
+  accessor: string;
+  className?: string;
+  role?: Role;
+}
 
 export type {
   TableRow,
@@ -63,4 +128,7 @@ export type {
   StudentList,
   SubjectList,
   TeacherList,
+  ResultList,
+  TResult,
+  IColumn,
 };
