@@ -1,5 +1,3 @@
-"use client";
-import { TeacherForm } from "@/components/entities";
 import { ModalTrigger } from "../ModalWithTrigger";
 
 interface IProps {
@@ -38,7 +36,8 @@ export const FormModal = ({ trigger, table, type, data, id }: IProps) => {
       </form>
     ) : type === "create" || type === "update" ? (
       // forms[table](type, data)
-      <TeacherForm type={type} data={data} />
+      // <TeacherForm type={type} data={data} />
+      "Form found"
     ) : (
       "Form not found!"
     );
