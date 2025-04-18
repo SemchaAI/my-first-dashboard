@@ -8,7 +8,7 @@ export default function DashboardLayout({
 }>) {
   return (
     <div className="flex min-h-dvh">
-      <aside className="flex w-[14%] min-w-[72px] flex-col gap-5 px-2 py-4 md:w-[8%] lg:w-[16%] xl:w-[14%]">
+      <aside className="flex w-[14%] min-w-[72px] flex-col gap-5 px-2 py-4 md:w-[8%] lg:w-[16%] lg:min-w-50 xl:w-[14%]">
         <Logo />
         <NavMenu />
       </aside>
