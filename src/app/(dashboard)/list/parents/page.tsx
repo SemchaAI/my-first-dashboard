@@ -25,12 +25,13 @@ export default async function ParentsList({
       OR: [
         { name: { contains: search, mode: "insensitive" } },
         {
-          username: { contains: search, mode: "insensitive" },
+          user: { username: { contains: search, mode: "insensitive" } },
         },
       ],
     },
     include: {
       students: true,
+      user: { select: { email: true, username: true } },
     },
   });
 

@@ -24,13 +24,14 @@ export default async function TeachersList({
       OR: [
         { name: { contains: search, mode: "insensitive" } },
         {
-          username: { contains: search, mode: "insensitive" },
+          user: { username: { contains: search, mode: "insensitive" } },
         },
       ],
     },
     include: {
       subjects: true,
       classes: true,
+      user: { select: { email: true, username: true } },
     },
   });
 

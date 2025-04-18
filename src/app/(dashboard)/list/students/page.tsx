@@ -30,7 +30,7 @@ export default async function StudentsList({
       OR: [
         { name: { contains: search, mode: "insensitive" } },
         {
-          username: { contains: search, mode: "insensitive" },
+          user: { username: { contains: search, mode: "insensitive" } },
         },
       ],
       ...(teacherId
@@ -47,6 +47,7 @@ export default async function StudentsList({
     },
     include: {
       class: true,
+      user: { select: { username: true, avatar: true } },
     },
   });
 
