@@ -1,20 +1,23 @@
+import bcrypt from "bcryptjs";
 import { Day, UserSex } from "@prisma/client";
 import { prisma } from "./prismaClient";
 
 async function up() {
-  // ADMIN
-  await prisma.admin.create({
-    data: {
-      id: "admin1",
-      username: "admin1",
-    },
-  });
-  await prisma.admin.create({
-    data: {
-      id: "admin2",
-      username: "admin2",
-    },
-  });
+  // ADMIN USERS
+  for (let i = 1; i <= 2; i++) {
+    await prisma.user.create({
+      data: {
+        id: `admin${i}`,
+        username: `admin${i}`,
+        email: `admin${i}@example.com`,
+        password: bcrypt.hashSync("12345", 10),
+        role: "ADMIN",
+        // admin: {
+        //   create: {},
+        // },
+      },
+    });
+  }
 
   // GRADE
   for (let i = 1; i <= 6; i++) {
@@ -56,22 +59,29 @@ async function up() {
 
   // TEACHER
   for (let i = 1; i <= 15; i++) {
-    await prisma.teacher.create({
+    await prisma.user.create({
       data: {
-        id: `teacher${i}`, // Unique ID for the teacher
+        id: `teacher${i}`,
         username: `teacher${i}`,
-        name: `TName${i}`,
-        surname: `TSurname${i}`,
+        role: "TEACHER",
+        password: bcrypt.hashSync(`teacher${i}`, 10),
         email: `teacher${i}@example.com`,
-        phone: `123-456-789${i}`,
-        address: `Address${i}`,
-        bloodType: "A+",
-        sex: i % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
-        subjects: { connect: [{ id: (i % 10) + 1 }] },
-        classes: { connect: [{ id: (i % 6) + 1 }] },
-        birthday: new Date(
-          new Date().setFullYear(new Date().getFullYear() - 30),
-        ),
+        avatar: `https://i.pravatar.cc/150?u=teacher${i}`,
+        teacher: {
+          create: {
+            name: `TName${i}`,
+            surname: `TSurname${i}`,
+            phone: `123-456-789${i}`,
+            address: `Address${i}`,
+            bloodType: "A+",
+            sex: i % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
+            subjects: { connect: [{ id: (i % 10) + 1 }] },
+            classes: { connect: [{ id: (i % 6) + 1 }] },
+            birthday: new Date(
+              new Date().setFullYear(new Date().getFullYear() - 30),
+            ),
+          },
+        },
       },
     });
   }
@@ -97,38 +107,53 @@ async function up() {
 
   // PARENT
   for (let i = 1; i <= 25; i++) {
-    await prisma.parent.create({
+    await prisma.user.create({
       data: {
-        id: `parentId${i}`,
-        username: `parentId${i}`,
-        name: `PName ${i}`,
-        surname: `PSurname ${i}`,
+        id: `parent${i}`,
+        username: `parent${i}`,
         email: `parent${i}@example.com`,
-        phone: `123-456-789${i}`,
-        address: `Address${i}`,
+        password: bcrypt.hashSync(`parent${i}`, 10),
+        role: "PARENT",
+        avatar: `https://i.pravatar.cc/150?u=parent${i}`,
+        parent: {
+          create: {
+            name: `PName ${i}`,
+            surname: `PSurname ${i}`,
+            phone: `123-456-789${i}`,
+            address: `Address${i}`,
+          },
+        },
       },
     });
   }
 
   // STUDENT
   for (let i = 1; i <= 50; i++) {
-    await prisma.student.create({
+    const parentId = `parent${Math.ceil(i / 2) % 25 || 25}`;
+    await prisma.user.create({
       data: {
         id: `student${i}`,
         username: `student${i}`,
-        name: `SName${i}`,
-        surname: `SSurname ${i}`,
         email: `student${i}@example.com`,
-        phone: `987-654-321${i}`,
-        address: `Address${i}`,
-        bloodType: "O-",
-        sex: i % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
-        parentId: `parentId${Math.ceil(i / 2) % 25 || 25}`,
-        gradeId: (i % 6) + 1,
-        classId: (i % 6) + 1,
-        birthday: new Date(
-          new Date().setFullYear(new Date().getFullYear() - 10),
-        ),
+        password: bcrypt.hashSync(`student${i}`, 10),
+        role: "STUDENT",
+        avatar: `https://i.pravatar.cc/150?u=student${i}`,
+        student: {
+          create: {
+            name: `SName${i}`,
+            surname: `SSurname ${i}`,
+            phone: `987-654-321${i}`,
+            address: `Address${i}`,
+            bloodType: "O-",
+            sex: i % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
+            parentId: parentId,
+            gradeId: (i % 6) + 1,
+            classId: (i % 6) + 1,
+            birthday: new Date(
+              new Date().setFullYear(new Date().getFullYear() - 10),
+            ),
+          },
+        },
       },
     });
   }
@@ -209,7 +234,7 @@ async function up() {
 }
 
 async function down() {
-  await prisma.$executeRaw`TRUNCATE TABLE "Admin" RESTART IDENTITY CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "User" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "Grade" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "Class" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "Subject" RESTART IDENTITY CASCADE`;
