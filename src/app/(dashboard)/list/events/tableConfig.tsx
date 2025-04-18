@@ -39,7 +39,7 @@ const renderRow = (item: EventList, role: Role) => (
     className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-secondary-highlight"
   >
     <td className="py-4 pr-2 pl-4">{item.title}</td>
-    <td className="px-2 py-0.5">{item.class.name}</td>
+    <td className="px-2 py-0.5">{item.class?.name}</td>
     <td className="hidden px-2 py-0.5 md:table-cell">
       {item.startTime.toLocaleDateString()}
     </td>
