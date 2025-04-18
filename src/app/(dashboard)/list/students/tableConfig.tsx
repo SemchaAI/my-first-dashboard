@@ -41,7 +41,7 @@ const renderRow = (item: StudentList, role: Role) => (
   >
     <td className="flex items-center gap-4 py-4 pr-2 pl-4">
       <Image
-        src={item.img || "/static/img/avatar.png"}
+        src={item.user.avatar || "/static/img/avatar.png"}
         alt=""
         width={40}
         height={40}
@@ -52,7 +52,7 @@ const renderRow = (item: StudentList, role: Role) => (
         <p className="text-xs text-text-primary">{item.class.name}</p>
       </div>
     </td>
-    <td className="hidden px-2 py-0.5 md:table-cell">{item.username}</td>
+    <td className="hidden px-2 py-0.5 md:table-cell">{item.user.username}</td>
     <td className="hidden px-2 py-0.5 md:table-cell">{item.class.name[0]}</td>
     <td className="hidden px-2 py-0.5 md:table-cell">{item.phone}</td>
     <td className="hidden px-2 py-0.5 md:table-cell">{item.address}</td>
