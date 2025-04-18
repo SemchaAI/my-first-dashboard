@@ -1,1 +1,1 @@
-export { paginatePrisma } from "./paginatePrisma";
+export { getUserSession } from "./getUserSession";
