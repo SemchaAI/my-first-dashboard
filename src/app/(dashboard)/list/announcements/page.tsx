@@ -6,14 +6,15 @@ import { Table } from "@/components/entities";
 import { columns, renderRow } from "./tableConfig";
 
 import type { TSearchParams } from "@/utils/models/global";
-
-const role = "ADMIN";
+import { getUserSession } from "@/utils/helpers";
 
 export default async function EventsList({
   searchParams,
 }: {
   searchParams: TSearchParams;
 }) {
+  const user = await getUserSession();
+  if (!user) return null;
   //query params start
   const { page = "1", limit = "10", search = "" } = await searchParams;
   const pageNum = parseInt(page);
@@ -49,9 +50,6 @@ export default async function EventsList({
             <button className="flex items-center rounded-full bg-tertiary p-2">
               <SortDesc size={14} className="stroke-text-highlight" />
             </button>
-            {/* <button className="flex items-center rounded-full bg-tertiary p-2">
-              <Plus size={14} className="stroke-text-highlight" />
-            </button> */}
             <FormModal
               table="announcement"
               trigger={
@@ -68,7 +66,7 @@ export default async function EventsList({
       </div>
       {/* list */}
       <Table
-        role={role}
+        role={user.role}
         columns={columns}
         renderRow={renderRow}
         data={result}
