@@ -1,11 +1,15 @@
+"use client";
 import Link from "next/link";
 import { icons, LucideIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 import { menu } from "@/utils/config";
-//tmp student admin teacher parent
-const role = "admin";
 
 export const NavMenu = () => {
+  const { data, status } = useSession();
+  const role = data?.user.role;
+  if (status === "unauthenticated" || !role) return null;
+
   return (
     <nav className="flex flex-col gap-5">
       {menu.map((item) => (
