@@ -1,11 +1,5 @@
-import type { TableRow } from "@/utils/models/tables";
+import type { IColumn, TableRow } from "@/utils/models/tables";
 import type { Role } from "@prisma/client";
-
-interface IColumn {
-  header: string;
-  accessor: string;
-  className?: string;
-}
 
 type TableProps<T extends TableRow> = {
   role: Role;
@@ -24,14 +18,18 @@ export const Table = <T extends TableRow>({
     <table className="mt-4 w-full">
       <thead>
         <tr className="text-left text-sm text-text-highlight">
-          {columns?.map((column) => (
-            <th
-              key={column.accessor}
-              className={`px-1 ${column.className ? column.className : ""}`}
-            >
-              {column.header}
-            </th>
-          ))}
+          {columns?.map((column) => {
+            const isAccessible = !column.role || column.role === role;
+            if (!isAccessible) return null;
+            return (
+              <th
+                key={column.accessor}
+                className={`px-1 ${column.className ? column.className : ""}`}
+              >
+                {column.header}
+              </th>
+            );
+          })}
         </tr>
       </thead>
       <tbody>{data.map((item) => renderRow(item, role))}</tbody>
