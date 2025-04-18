@@ -39,7 +39,7 @@ export const InputField = ({
         <Input
           type={currType}
           id={id}
-          className="pt-2.5 pr-5 pb-2.5 pl-10 focus:border-secondary-accent"
+          className="w-full pt-2.5 pr-5 pb-2.5 pl-10 focus:border-secondary-accent"
           placeholder={placeholder}
           autoComplete={autoComplete}
           value={rawValue}
