@@ -21,7 +21,7 @@ export const Form = <T extends FieldValues>({
     <FormProvider {...form}>
       <form
         className={
-          "mx-auto my-12 w-full max-w-lg min-w-80" + `${title ? "" : "pt-7"}`
+          "m-auto w-full max-w-lg min-w-80 p-1 " + `${title ? "" : "pt-7"}`
         }
         onSubmit={form.handleSubmit(onSubmit)}
       >
