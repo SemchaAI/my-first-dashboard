@@ -1,6 +1,5 @@
-import { Badge } from "@/components/features";
+import { Badge, UserButton } from "@/components/features";
 import { Bell, MessageCircleMore } from "lucide-react";
-import Image from "next/image";
 
 export const Header = () => {
   return (
@@ -19,8 +18,9 @@ export const Header = () => {
           <Bell size={20} />
           <Badge total={123} />
         </div>
+
         {/* user profile */}
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <div className="flex flex-col">
             <p className="text-sm leading-3.5 font-medium text-text-highlight">
               John Doe
@@ -29,10 +29,6 @@ export const Header = () => {
               Admin
             </p>
           </div>
-          {/* <UserCircle
-            size={32}
-            className="fill-secondary cursor-pointer"
-          /> */}
           <Image
             src="/static/img/avatar.png"
             width={32}
@@ -40,7 +36,9 @@ export const Header = () => {
             alt="user avatar"
             className="cursor-pointer rounded-full fill-secondary"
           />
-        </div>
+        </div> 
+        */}
+        <UserButton />
       </div>
     </header>
   );
