@@ -5,3 +5,5 @@ export { Pagination } from "./pagination/Pagination";
 export { FormModal } from "./modal/form/FormModal";
 
 export { InputField } from "./fields/InputField";
+
+export { UserButton } from "./user/UserButton";
