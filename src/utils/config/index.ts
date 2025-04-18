@@ -1,5 +1,8 @@
 export { menu } from "./menu";
 
 //schemas
-export { teacherSchema } from "./schemas";
-export type { TeacherSchema } from "./schemas";
+export { signInSchema } from "./schemas";
+export type { SignInSchema } from "./schemas";
+
+//auth
+export { routeAccessMap } from "./routes";
