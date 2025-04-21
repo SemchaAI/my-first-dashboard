@@ -4,6 +4,7 @@ import { Pagination, Search } from "@/components/features";
 import { Table } from "@/components/entities";
 import { prisma } from "@/prisma/prismaClient";
 import { columns, renderRow } from "./tableConfig";
+import { getUserSession } from "@/utils/helpers";
 
 import type { TSearchParams } from "@/utils/models/global";
 
@@ -12,6 +13,8 @@ export default async function LessonsList({
 }: {
   searchParams: TSearchParams;
 }) {
+  const user = await getUserSession();
+  if (!user) return null;
   //query params start
   const {
     page = "1",
@@ -79,7 +82,7 @@ export default async function LessonsList({
       </div>
       {/* list */}
       <Table
-        role="ADMIN"
+        role={user.role}
         columns={columns}
         renderRow={renderRow}
         data={result}
