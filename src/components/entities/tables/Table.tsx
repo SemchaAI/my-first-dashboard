@@ -19,7 +19,7 @@ export const Table = <T extends TableRow>({
       <thead>
         <tr className="text-left text-sm text-text-highlight">
           {columns?.map((column) => {
-            const isAccessible = !column.role || column.role === role;
+            const isAccessible = !column.role || column.role.includes(role);
             if (!isAccessible) return null;
             return (
               <th
