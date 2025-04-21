@@ -6,12 +6,15 @@ import { Table } from "@/components/entities";
 
 import type { TSearchParams } from "@/utils/models/global";
 import { columns, renderRow } from "./tableConfig";
+import { getUserSession } from "@/utils/helpers";
 
 export default async function StudentsList({
   searchParams,
 }: {
   searchParams: TSearchParams;
 }) {
+  const user = await getUserSession();
+  if (!user) return null;
   //query params start
   const {
     page = "1",
@@ -77,7 +80,7 @@ export default async function StudentsList({
       </div>
       {/* list */}
       <Table
-        role="ADMIN"
+        role={user.role}
         columns={columns}
         renderRow={renderRow}
         data={result}
