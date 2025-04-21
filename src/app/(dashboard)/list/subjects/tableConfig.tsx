@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Eye, Trash } from "lucide-react";
-import type { Role } from "@prisma/client";
+
 import type { SubjectList } from "@/utils/models/tables";
 
 const columns = [
@@ -19,7 +19,7 @@ const columns = [
   },
 ];
 
-const renderRow = (item: SubjectList, role: Role) => (
+const renderRow = (item: SubjectList) => (
   <tr
     key={item.id}
     className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-secondary-highlight"
