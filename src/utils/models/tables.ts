@@ -49,7 +49,11 @@ type SubjectList = Subject & { teachers: Teacher[] };
 type TeacherList = Teacher & {
   subjects: Subject[];
   classes: Class[];
-  user: { username: User["username"]; email: User["email"] };
+  user: {
+    username: User["username"];
+    email: User["email"];
+    avatar: User["avatar"];
+  };
 };
 type ResultList = {
   id: number;
@@ -113,7 +117,7 @@ interface IColumn {
   header: string;
   accessor: string;
   className?: string;
-  role?: Role;
+  role?: Role[];
 }
 
 export type {
