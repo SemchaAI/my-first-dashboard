@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Eye, Trash } from "lucide-react";
-import type { Role } from "@prisma/client";
+import { Role } from "@prisma/client";
 import type { ClassList } from "@/utils/models/tables";
 
 const columns = [
@@ -26,6 +26,7 @@ const columns = [
   {
     header: "Actions",
     accessor: "action",
+    role: [Role.ADMIN],
   },
 ];
 const renderRow = (item: ClassList, role: Role) => (
@@ -39,21 +40,22 @@ const renderRow = (item: ClassList, role: Role) => (
     <td className="hidden px-2 py-0.5 md:table-cell">
       {item.supervisor?.name + " " + item.supervisor?.surname || "N/A"}
     </td>
-    <td>
-      <div className="flex items-center gap-2">
-        <Link
-          href={`/list/teachers/${item.id}`}
-          className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary"
-        >
-          <Eye size={16} className="stroke-background" />
-        </Link>
-        {role === "ADMIN" && (
+    {role === Role.ADMIN && (
+      <td>
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/list/teachers/${item.id}`}
+            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary"
+          >
+            <Eye size={16} className="stroke-background" />
+          </Link>
+
           <button className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-secondary">
             <Trash size={16} className="stroke-background" />
           </button>
-        )}
-      </div>
-    </td>
+        </div>
+      </td>
+    )}
   </tr>
 );
 

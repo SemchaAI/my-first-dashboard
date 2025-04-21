@@ -36,13 +36,9 @@ const renderRow = (item: SubjectList, role: Role) => (
         >
           <Eye size={16} className="stroke-background" />
         </Link>
-        {role === "ADMIN" && (
-          <>
-            <button className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-secondary">
-              <Trash size={16} className="stroke-background" />
-            </button>
-          </>
-        )}
+        <button className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-secondary">
+          <Trash size={16} className="stroke-background" />
+        </button>
       </div>
     </td>
   </tr>

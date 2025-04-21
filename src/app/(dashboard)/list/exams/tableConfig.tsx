@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Eye, Trash } from "lucide-react";
-import type { Role } from "@prisma/client";
+import { Role } from "@prisma/client";
 import type { ExamList } from "@/utils/models/tables";
 
 const columns = [
@@ -20,6 +20,7 @@ const columns = [
   {
     header: "Actions",
     accessor: "action",
+    role: [Role.ADMIN, Role.TEACHER],
   },
 ];
 
@@ -36,21 +37,21 @@ const renderRow = (item: ExamList, role: Role) => (
     <td className="hidden px-2 py-0.5 md:table-cell">
       {new Intl.DateTimeFormat("en-US").format(new Date(item.startTime))}
     </td>
-    <td>
-      <div className="flex items-center gap-2">
-        <Link
-          href={`/list/exams/${item.id}`}
-          className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary"
-        >
-          <Eye size={16} className="stroke-background" />
-        </Link>
-        {role === "ADMIN" && (
+    {(role === Role.ADMIN || role === Role.TEACHER) && (
+      <td>
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/list/exams/${item.id}`}
+            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary"
+          >
+            <Eye size={16} className="stroke-background" />
+          </Link>
           <button className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-secondary">
             <Trash size={16} className="stroke-background" />
           </button>
-        )}
-      </div>
-    </td>
+        </div>
+      </td>
+    )}
   </tr>
 );
 

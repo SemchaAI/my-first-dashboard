@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Eye, Trash } from "lucide-react";
-import type { Role } from "@prisma/client";
+import { Role } from "@prisma/client";
 import type { ParentList } from "@/utils/models/tables";
 
-const getColumns = (role: Role) => [
+const columns = [
   {
     header: "Info",
     accessor: "info",
@@ -23,14 +23,11 @@ const getColumns = (role: Role) => [
     accessor: "address",
     className: "hidden lg:table-cell",
   },
-  ...(role === "ADMIN"
-    ? [
-        {
-          header: "Actions",
-          accessor: "action",
-        },
-      ]
-    : []),
+  {
+    header: "Actions",
+    accessor: "action",
+    role: [Role.ADMIN],
+  },
 ];
 
 const renderRow = (item: ParentList, role: Role) => (
@@ -49,24 +46,22 @@ const renderRow = (item: ParentList, role: Role) => (
     </td>
     <td className="hidden px-2 py-0.5 md:table-cell">{item.phone}</td>
     <td className="hidden px-2 py-0.5 text-xs md:table-cell">{item.address}</td>
-    <td>
-      <div className="flex items-center gap-2">
-        <Link
-          href={`/list/teachers/${item.id}`}
-          className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary"
-        >
-          <Eye size={16} className="stroke-background" />
-        </Link>
-        {role === "ADMIN" && (
-          <>
-            <button className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-secondary">
-              <Trash size={16} className="stroke-background" />
-            </button>
-          </>
-        )}
-      </div>
-    </td>
+    {role === Role.ADMIN && (
+      <td>
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/list/teachers/${item.id}`}
+            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary"
+          >
+            <Eye size={16} className="stroke-background" />
+          </Link>
+          <button className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-secondary">
+            <Trash size={16} className="stroke-background" />
+          </button>
+        </div>
+      </td>
+    )}
   </tr>
 );
 
-export { getColumns, renderRow };
+export { columns, renderRow };

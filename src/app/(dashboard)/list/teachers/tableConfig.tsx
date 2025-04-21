@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { Eye, Trash } from "lucide-react";
-import type { Role } from "@prisma/client";
+import { Role } from "@prisma/client";
 import type { TeacherList } from "@/utils/models/tables";
 
 const columns = [
@@ -38,6 +38,7 @@ const columns = [
   {
     header: "Actions",
     accessor: "action",
+    role: [Role.ADMIN],
   },
 ];
 
@@ -48,7 +49,7 @@ const renderRow = (item: TeacherList, role: Role) => (
   >
     <td className="flex items-center gap-4 py-4 pr-2 pl-4">
       <Image
-        src={item.img || "/static/img/avatar.png"}
+        src={item.user.avatar || "/static/img/avatar.png"}
         alt={`${item.name} profile avatar`}
         width={40}
         height={40}
@@ -68,21 +69,23 @@ const renderRow = (item: TeacherList, role: Role) => (
     </td>
     <td className="hidden px-2 py-0.5 md:table-cell">{item.phone}</td>
     <td className="hidden px-2 py-0.5 text-xs md:table-cell">{item.address}</td>
-    <td>
-      <div className="flex items-center gap-2">
-        <Link
-          href={`/list/teachers/${item.id}`}
-          className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary"
-        >
-          <Eye size={16} className="stroke-background" />
-        </Link>
-        {role === "ADMIN" && (
-          <button className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-secondary">
-            <Trash size={16} className="stroke-background" />
-          </button>
-        )}
-      </div>
-    </td>
+    {role === Role.ADMIN && (
+      <td>
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/list/teachers/${item.id}`}
+            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary"
+          >
+            <Eye size={16} className="stroke-background" />
+          </Link>
+          {role === "ADMIN" && (
+            <button className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-secondary">
+              <Trash size={16} className="stroke-background" />
+            </button>
+          )}
+        </div>
+      </td>
+    )}
   </tr>
 );
 

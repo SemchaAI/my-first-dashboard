@@ -20,7 +20,7 @@ const columns: IColumn[] = [
   {
     header: "Actions",
     accessor: "action",
-    role: Role.ADMIN,
+    role: [Role.ADMIN],
   },
 ];
 
