@@ -7,12 +7,16 @@ import { Table } from "@/components/entities";
 
 import type { TSearchParams } from "@/utils/models/global";
 import { columns, flatResult, renderRow } from "./tableConfig";
+import { getUserSession } from "@/utils/helpers";
+import { Role } from "@prisma/client";
 
 export default async function ResultsList({
   searchParams,
 }: {
   searchParams: TSearchParams;
 }) {
+  const user = await getUserSession();
+  if (!user) return null;
   //query params start
   const {
     page = "1",
@@ -28,13 +32,27 @@ export default async function ResultsList({
     limit: limitNum,
     page: pageNum,
     where: {
-      OR: [
-        { exam: { title: { contains: search, mode: "insensitive" } } },
+      AND: [
         {
-          student: { name: { contains: search, mode: "insensitive" } },
+          OR: [
+            { exam: { title: { contains: search, mode: "insensitive" } } },
+            {
+              student: { name: { contains: search, mode: "insensitive" } },
+            },
+          ],
+        },
+        {
+          ...(user.role === Role.TEACHER && {
+            OR: [
+              { exam: { lesson: { teacherId: user.id } } },
+              { assignment: { lesson: { teacherId: user.id } } },
+            ],
+          }),
         },
       ],
-      studentId: studentId,
+      ...(user.role === Role.STUDENT
+        ? { studentId: user.id }
+        : { studentId: studentId }),
     },
     include: {
       student: { select: { name: true, surname: true } },
@@ -89,7 +107,7 @@ export default async function ResultsList({
       </div>
       {/* list */}
       <Table
-        role="ADMIN"
+        role={user.role}
         columns={columns}
         renderRow={renderRow}
         data={flatData}
