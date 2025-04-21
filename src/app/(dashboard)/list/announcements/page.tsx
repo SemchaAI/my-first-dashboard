@@ -7,6 +7,7 @@ import { columns, renderRow } from "./tableConfig";
 
 import type { TSearchParams } from "@/utils/models/global";
 import { getUserSession } from "@/utils/helpers";
+import { Role } from "@prisma/client";
 
 export default async function EventsList({
   searchParams,
@@ -25,6 +26,24 @@ export default async function EventsList({
     page: pageNum,
     where: {
       title: { contains: search, mode: "insensitive" },
+      ...(user.role === Role.TEACHER && {
+        OR: [
+          { class: { lessons: { some: { teacherId: user.id } } } },
+          { classId: null },
+        ],
+      }),
+      ...(user.role === Role.STUDENT && {
+        OR: [
+          { class: { students: { some: { id: user.id } } } },
+          { classId: null },
+        ],
+      }),
+      ...(user.role === Role.PARENT && {
+        OR: [
+          { class: { students: { some: { parentId: user.id } } } },
+          { classId: null },
+        ],
+      }),
     },
     include: {
       class: { select: { name: true } },
