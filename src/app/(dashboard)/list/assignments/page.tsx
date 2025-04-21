@@ -6,12 +6,16 @@ import { Table } from "@/components/entities";
 
 import type { TSearchParams } from "@/utils/models/global";
 import { columns, renderRow } from "./tableConfig";
+import { getUserSession } from "@/utils/helpers";
+import { Role } from "@prisma/client";
 
 export default async function AssignmentsList({
   searchParams,
 }: {
   searchParams: TSearchParams;
 }) {
+  const user = await getUserSession();
+  if (!user) return null;
   //query params start
   const {
     page = "1",
@@ -37,8 +41,14 @@ export default async function AssignmentsList({
             },
           },
         ],
-        teacherId: teacherId,
+        teacherId: user.role === Role.TEACHER ? user.id : teacherId,
         ...(classId && { classId: parseInt(classId) }),
+        ...(user.role === Role.STUDENT && {
+          class: { students: { some: { id: user.id } } },
+        }),
+        ...(user.role === Role.PARENT && {
+          class: { students: { some: { parentId: user.id } } },
+        }),
       },
     },
     include: {
@@ -79,7 +89,7 @@ export default async function AssignmentsList({
       </div>
       {/* list */}
       <Table
-        role="ADMIN"
+        role={user.role}
         columns={columns}
         renderRow={renderRow}
         data={result}
