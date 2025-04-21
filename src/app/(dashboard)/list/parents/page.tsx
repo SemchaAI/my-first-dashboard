@@ -3,15 +3,18 @@ import { Filter, Plus, SortDesc } from "lucide-react";
 import { Pagination, Search } from "@/components/features";
 import { Table } from "@/components/entities";
 import { prisma } from "@/prisma/prismaClient";
-import { getColumns, renderRow } from "./tableConfig";
+import { columns, renderRow } from "./tableConfig";
 
 import type { TSearchParams } from "@/utils/models/global";
+import { getUserSession } from "@/utils/helpers";
 
 export default async function ParentsList({
   searchParams,
 }: {
   searchParams: TSearchParams;
 }) {
+  const user = await getUserSession();
+  if (!user) return null;
   //query params start
   const { page = "1", limit = "10", search = "" } = await searchParams;
   const pageNum = parseInt(page);
@@ -62,8 +65,8 @@ export default async function ParentsList({
       </div>
       {/* list */}
       <Table
-        role="ADMIN"
-        columns={getColumns("TEACHER")}
+        role={user.role}
+        columns={columns}
         renderRow={renderRow}
         data={result}
       />
