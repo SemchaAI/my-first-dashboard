@@ -3,15 +3,19 @@ import { Filter, Plus, SortDesc } from "lucide-react";
 import { prisma } from "@/prisma/prismaClient";
 import { Pagination, Search } from "@/components/features";
 import { Table } from "@/components/entities";
+import { getUserSession } from "@/utils/helpers";
+import { columns, renderRow } from "./tableConfig";
 
 import type { TSearchParams } from "@/utils/models/global";
-import { columns, renderRow } from "./tableConfig";
+import { Role } from "@prisma/client";
 
 export default async function EventsList({
   searchParams,
 }: {
   searchParams: TSearchParams;
 }) {
+  const user = await getUserSession();
+  if (!user) return null;
   //query params start
   const { page = "1", limit = "10", search = "" } = await searchParams;
   const pageNum = parseInt(page);
@@ -23,6 +27,24 @@ export default async function EventsList({
     page: pageNum,
     where: {
       title: { contains: search, mode: "insensitive" },
+      ...(user.role === Role.TEACHER && {
+        OR: [
+          { class: { lessons: { some: { teacherId: user.id } } } },
+          { classId: null },
+        ],
+      }),
+      ...(user.role === Role.STUDENT && {
+        OR: [
+          { class: { students: { some: { id: user.id } } } },
+          { classId: null },
+        ],
+      }),
+      ...(user.role === Role.PARENT && {
+        OR: [
+          { class: { students: { some: { parentId: user.id } } } },
+          { classId: null },
+        ],
+      }),
     },
     include: {
       class: { select: { name: true } },
@@ -56,7 +78,7 @@ export default async function EventsList({
       </div>
       {/* list */}
       <Table
-        role="ADMIN"
+        role={user.role}
         columns={columns}
         renderRow={renderRow}
         data={result}
