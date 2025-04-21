@@ -3,15 +3,18 @@ import { prisma } from "@/prisma/prismaClient";
 
 import { Pagination, Search } from "@/components/features";
 import { Table } from "@/components/entities";
+import { columns, renderRow } from "./tableConfig";
+import { getUserSession } from "@/utils/helpers";
 
 import type { TSearchParams } from "@/utils/models/global";
-import { columns, renderRow } from "./tableConfig";
 
 export default async function TeachersList({
   searchParams,
 }: {
   searchParams: TSearchParams;
 }) {
+  const user = await getUserSession();
+  if (!user) return null;
   //query params start
   const { page = "1", limit = "10", search = "" } = await searchParams;
   const pageNum = parseInt(page);
@@ -31,7 +34,7 @@ export default async function TeachersList({
     include: {
       subjects: true,
       classes: true,
-      user: { select: { email: true, username: true } },
+      user: { select: { email: true, username: true, avatar: true } },
     },
   });
 
@@ -62,7 +65,7 @@ export default async function TeachersList({
       </div>
       {/* list */}
       <Table
-        role="ADMIN"
+        role={user.role}
         columns={columns}
         renderRow={renderRow}
         data={result}
