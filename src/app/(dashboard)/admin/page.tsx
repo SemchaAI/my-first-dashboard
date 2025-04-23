@@ -6,18 +6,29 @@ import {
   GenderChart,
   UserCard,
 } from "@/components/entities";
+import { prisma } from "@/prisma/prismaClient";
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  const [userCount, studentCount, parentCount, teacherCount] =
+    await prisma.$transaction([
+      prisma.user.count(),
+      prisma.student.count(),
+      prisma.parent.count(),
+      prisma.teacher.count(),
+    ]);
+  const now = new Date();
+  const formatted = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const adminCount = userCount - studentCount - parentCount - teacherCount;
   return (
     <div className="flex flex-1 flex-col gap-4 md:flex-row">
       {/* left */}
       <div className="flex w-full flex-col gap-8 lg:w-2/3">
         {/* user cards   */}
         <ul className="flex flex-wrap justify-between gap-4">
-          <UserCard type="student" />
-          <UserCard type="teacher" />
-          <UserCard type="parent" />
-          <UserCard type="staff" />
+          <UserCard type="admin" date={formatted} total={adminCount} />
+          <UserCard type="teacher" date={formatted} total={teacherCount} />
+          <UserCard type="student" date={formatted} total={studentCount} />
+          <UserCard type="parent" date={formatted} total={parentCount} />
         </ul>
         {/* MIDDLE CHARTS */}
         <div className="flex flex-col justify-between gap-4 lg:flex-row">
