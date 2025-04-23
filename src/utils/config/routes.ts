@@ -21,3 +21,9 @@ export const routeAccessMap: RouteAccessMap = {
   "/list/events": [Role.ADMIN, Role.TEACHER, Role.STUDENT, Role.PARENT],
   "/list/announcements": [Role.ADMIN, Role.TEACHER, Role.STUDENT, Role.PARENT],
 };
+
+export const API_ROUTES = {
+  GENDERS: "/api/charts/gender",
+  ATTENDANCE: "/api/charts/attendance",
+  CALENDAR_EVENTS: "/api/calendar/events",
+};
