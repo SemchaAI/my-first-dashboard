@@ -1,5 +1,5 @@
 "use client";
-import { Header } from "@/components/features";
+import { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -10,37 +10,61 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import toast from "react-hot-toast";
 
-// interface IProps {}
+import { Header } from "@/components/features";
+import { API_ROUTES, ApiError } from "@/utils/config";
 
-const data = [
+const initData = [
   {
     name: "Mon",
-    present: 60,
-    absent: 40,
+    present: 0,
+    absent: 0,
   },
   {
     name: "Tue",
-    present: 70,
-    absent: 60,
+    present: 0,
+    absent: 0,
   },
   {
     name: "Wed",
-    present: 90,
-    absent: 19,
+    present: 0,
+    absent: 0,
   },
   {
     name: "Thu",
-    present: 90,
-    absent: 19,
+    present: 0,
+    absent: 0,
   },
   {
     name: "Fri",
-    present: 65,
-    absent: 40,
+    present: 0,
+    absent: 0,
   },
 ];
 export const AttendanceChart = () => {
+  const [data, setData] = useState(initData);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch(API_ROUTES.ATTENDANCE);
+        const json = await res.json();
+        if (!res.ok)
+          throw new ApiError(
+            json.message || "Failed to fetch data",
+            res.status,
+          );
+        setData(json.data);
+      } catch (err) {
+        const msg =
+          err instanceof ApiError ? err.message : "Internal server error";
+        console.error("err", err);
+        toast.error(msg, { duration: 5000 });
+      }
+    }
+    fetchData();
+  }, []);
+
   return (
     <div className="flex h-full w-full flex-col rounded-2xl bg-background p-4">
       {/* <div className="flex items-center justify-between">

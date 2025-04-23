@@ -1,41 +1,49 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
+import toast from "react-hot-toast";
 
 import { Header } from "@/components/features";
+import { API_ROUTES, ApiError } from "@/utils/config";
+
 // import "react-calendar/dist/Calendar.css";
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-// interface IProps {
-// }
-
-const data = [
-  {
-    id: 1,
-    title: "Event 1",
-    time: "12:00 PM- 2:00 PM",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat, quae.",
-  },
-  {
-    id: 2,
-    title: "Event 2",
-    time: "12:00 PM- 2:00 PM",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat, quae.",
-  },
-  {
-    id: 3,
-    title: "Event 3",
-    time: "12:00 PM- 2:00 PM",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat, quae.",
-  },
-];
+interface IEvent {
+  id: number;
+  title: string;
+  startTime: string;
+  endTime: string;
+  description: string;
+}
 
 export const EventCalendar = () => {
   const [value, onChange] = useState<Value>(new Date());
+  const [data, setData] = useState<IEvent[]>([]);
+  console.log("data", data && data[0]);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch(
+          `${API_ROUTES.CALENDAR_EVENTS}?date=${value?.toLocaleString("en-US")}`,
+        );
+        const json = await res.json();
+        if (!res.ok)
+          throw new ApiError(
+            json.message || "Failed to fetch data",
+            res.status,
+          );
+        setData(json.data);
+      } catch (err) {
+        const msg =
+          err instanceof ApiError ? err.message : "Internal server error";
+        console.error("err", err);
+        toast.error(msg, { duration: 5000 });
+      }
+    }
+    fetchData();
+  }, [value]);
   return (
     <div className="flex w-full flex-col gap-1 rounded-2xl bg-background p-4">
       <Calendar
@@ -44,10 +52,6 @@ export const EventCalendar = () => {
         onChange={onChange}
         value={value}
       />
-      {/* <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold">Events</h1>
-        <Ellipsis size={28} className="cursor-pointer stroke-text-primary" />
-      </div> */}
       <Header title="Events" icon />
       <div className="flex flex-col gap-4">
         {data.map((item) => (
@@ -60,7 +64,16 @@ export const EventCalendar = () => {
               <h1 className="text-lg font-semibold text-text-highlight">
                 {item.title}
               </h1>
-              <span className="text-sm">{item.time}</span>
+              <span className="text-sm">
+                {new Date(Date.parse(item.startTime)).toLocaleTimeString(
+                  "en-US",
+                  {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                  },
+                )}
+              </span>
             </div>
             <p>{item.description}</p>
           </div>

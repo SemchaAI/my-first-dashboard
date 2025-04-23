@@ -1,30 +1,46 @@
 "use client";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
 
 import { Header } from "@/components/features";
-
-// interface IProps {}
-
-const data = [
-  {
-    name: "Total",
-    count: 100,
-    fill: "white",
-  },
-  {
-    name: "Girls",
-    count: 45,
-    fill: "#FAE27C",
-  },
-  {
-    name: "Boys",
-    count: 55,
-    fill: "#C3EBFA",
-  },
-];
+import { API_ROUTES, ApiError } from "@/utils/config";
+import toast from "react-hot-toast";
 
 export const GenderChart = () => {
+  const [data, setData] = useState([
+    { name: "Total", count: 0, fill: "white" },
+    { name: "Girls", count: 0, fill: "#FAE27C" },
+    { name: "Boys", count: 0, fill: "#C3EBFA" },
+  ]);
+  const MalePercentage = (data[2].count / data[0].count) * 100 || 0;
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch(API_ROUTES.GENDERS);
+        const json = await res.json();
+        if (!res.ok)
+          throw new ApiError(
+            json.message || "Failed to fetch data",
+            res.status,
+          );
+        const boys = json.boys ?? 0;
+        const girls = json.girls ?? 0;
+        setData([
+          { name: "Total", count: boys + girls, fill: "white" },
+          { name: "Girls", count: girls, fill: "#FAE27C" },
+          { name: "Boys", count: boys, fill: "#C3EBFA" },
+        ]);
+      } catch (err) {
+        const msg =
+          err instanceof ApiError ? err.message : "Internal server error";
+        console.error("err", err);
+        toast.error(msg, { duration: 5000 });
+      }
+    }
+    fetchData();
+  }, []);
+
   return (
     <div className="flex h-full w-full flex-col rounded-2xl bg-background p-4">
       {/* TITLE */}
@@ -68,13 +84,15 @@ export const GenderChart = () => {
       <div className="flex items-center justify-center gap-8">
         <div className="flex flex-col gap-1">
           <div className="h-4 w-4 rounded-full bg-primary" />
-          <span className="font-bold text-text-highlight">1,234</span>
-          <p className="text-xs text-text-primary">Male (55%)</p>
+          <span className="font-bold text-text-highlight">{data[2].count}</span>
+          <p className="text-xs text-text-primary">Male ({MalePercentage}%)</p>
         </div>
         <div className="flex flex-col gap-1">
           <div className="h-4 w-4 rounded-full bg-tertiary" />
-          <span className="font-bold text-text-highlight">1,234</span>
-          <p className="text-xs text-text-primary">Male (55%)</p>
+          <span className="font-bold text-text-highlight">{data[1].count}</span>
+          <p className="text-xs text-text-primary">
+            Male ({100 - MalePercentage}%)
+          </p>
         </div>
       </div>
     </div>
