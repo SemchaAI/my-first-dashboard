@@ -3,6 +3,7 @@ import { Day, UserSex } from "@prisma/client";
 import { prisma } from "./prismaClient";
 
 async function up() {
+  const now = new Date();
   // ADMIN USERS
   for (let i = 1; i <= 2; i++) {
     await prisma.user.create({
@@ -211,8 +212,20 @@ async function up() {
       data: {
         title: `Event ${i}`,
         description: `Description for Event ${i}`,
-        startTime: new Date(new Date().setHours(new Date().getHours() + 1)),
-        endTime: new Date(new Date().setHours(new Date().getHours() + 2)),
+        startTime: new Date(new Date().setHours(now.getHours() + 1)),
+        endTime: new Date(new Date().setHours(now.getHours() + 2)),
+        classId: (i % 5) + 1,
+      },
+    });
+  }
+  for (let i = 6; i <= 7; i++) {
+    await prisma.event.create({
+      data: {
+        title: `Event ${i}`,
+        description: `Description for Event ${i}`,
+        startTime: new Date(new Date().setHours(now.getHours() + 25)),
+        endTime: new Date(new Date().setHours(now.getHours() + 26)),
+
         classId: (i % 5) + 1,
       },
     });
