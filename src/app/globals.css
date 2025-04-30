@@ -154,7 +154,7 @@
   }
 
   .rbc-event {
-    @apply !border-none !text-text-highlight !p-[10px] md:!my-[10px] !mx-[5px] !w-full first:!bg-primary nth-[2n]:!bg-secondary nth-[3n]:!bg-tertiary nth-[4n]:!bg-[#ffc4f4] nth-[5n]:!bg-primary
+    @apply !border-none !text-text-highlight !p-[10px] md:!my-[10px] !mx-[5px] !w-full !h-auto first:!bg-primary nth-[2n]:!bg-secondary nth-[3n]:!bg-tertiary nth-[4n]:!bg-[#ffc4f4] nth-[5n]:!bg-primary
   }
   
   .rbc-event-label{
