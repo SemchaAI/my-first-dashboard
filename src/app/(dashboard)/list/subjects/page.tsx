@@ -1,17 +1,32 @@
-import { Filter, Plus, SortDesc } from "lucide-react";
+import dynamic from "next/dynamic";
+import { Filter, SortDesc } from "lucide-react";
 
 import { prisma } from "@/prisma/prismaClient";
-import { Pagination, Search } from "@/components/features";
-import { Table } from "@/components/entities";
-import { columns, renderRow } from "./tableConfig";
+import { ModalWithTrigger, Pagination, Search } from "@/components/features";
+import { CreateButton, Table } from "@/components/entities";
+import { getUserSession } from "@/utils/helpers";
+import { columns, renderRow, subjectTeachers } from "./tableConfig";
 
 import type { TSearchParams } from "@/utils/models/global";
+import { Role } from "@prisma/client";
+
+const SubjectForm = dynamic(
+  () =>
+    import("@/components/entities/forms/SubjectForm").then(
+      (mod) => mod.SubjectForm,
+    ),
+  {
+    loading: () => <h1>Loading...</h1>,
+  },
+);
 
 export default async function SubjectsList({
   searchParams,
 }: {
   searchParams: TSearchParams;
 }) {
+  const user = await getUserSession();
+  if (!user) return null;
   //query params start
   const { page = "1", limit = "10", search = "" } = await searchParams;
   const pageNum = parseInt(page);
@@ -56,15 +71,24 @@ export default async function SubjectsList({
             <button className="flex items-center rounded-full bg-tertiary p-2">
               <SortDesc size={14} className="stroke-text-highlight" />
             </button>
-            <button className="flex items-center rounded-full bg-tertiary p-2">
-              <Plus size={14} className="stroke-text-highlight" />
-            </button>
+            {user.role === Role.ADMIN && subjectTeachers && (
+              <ModalWithTrigger button={<CreateButton />}>
+                <SubjectForm
+                  type="Create"
+                  data={{
+                    name: "",
+                    id: undefined,
+                    teachers: subjectTeachers.map((t) => t.id),
+                  }}
+                />
+              </ModalWithTrigger>
+            )}
           </div>
         </div>
       </div>
       {/* list */}
       <Table
-        role="ADMIN"
+        role={user.role}
         columns={columns}
         renderRow={renderRow}
         data={result}
