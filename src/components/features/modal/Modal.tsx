@@ -28,10 +28,12 @@ const Modal = ({ isOpen, onClose, children }: IProps) => {
   if (!isOpen) return null;
 
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 z-50 bg-black/50 p-2.5">
-      <div className="relative z-20 flex min-h-full items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5">
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="relative z-10 h-fit w-fit">
         <div className="relative min-w-[300px] rounded-xl bg-background p-4 shadow-lg">
           <button
+            type="button"
             onClick={onClose}
             className="group absolute top-4 right-4 flex cursor-pointer justify-self-end transition-colors"
           >
@@ -44,7 +46,6 @@ const Modal = ({ isOpen, onClose, children }: IProps) => {
           {children}
         </div>
       </div>
-      <div className="absolute inset-0 z-10" onClick={onClose} />
     </div>,
     document.body,
   );
