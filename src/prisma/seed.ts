@@ -92,19 +92,31 @@ async function up() {
     await prisma.lesson.create({
       data: {
         name: `Lesson${i}`,
-        day: Day[
-          Object.keys(Day)[
-            Math.floor(Math.random() * Object.keys(Day).length)
-          ] as keyof typeof Day
-        ],
-        startTime: new Date(new Date().setHours(new Date().getHours() + 1)),
-        endTime: new Date(new Date().setHours(new Date().getHours() + 3)),
+        day: Day[Object.keys(Day)[i % 5] as keyof typeof Day],
+        startTime: new Date(new Date().setHours(7, 0, 0, 0)),
+        endTime: new Date(new Date().setHours(9, 0, 0, 0)),
         subjectId: (i % 10) + 1,
         classId: (i % 6) + 1,
         teacherId: `teacher${(i % 15) + 1}`,
       },
     });
   }
+
+  //VACATIONS
+  await prisma.vacation.create({
+    data: {
+      label: "Easter",
+      startDate: new Date(2025, 3, 21), // June 1st, 2025
+      endDate: new Date(2025, 3, 27), // August 31st, 2025
+    },
+  });
+  await prisma.vacation.create({
+    data: {
+      label: "Summer Break",
+      startDate: new Date(2025, 5, 1), // June 1st, 2025
+      endDate: new Date(2025, 7, 31), // August 31st, 2025
+    },
+  });
 
   // PARENT
   for (let i = 1; i <= 25; i++) {
@@ -261,6 +273,7 @@ async function down() {
   await prisma.$executeRaw`TRUNCATE TABLE "Attendance" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "Event" RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE "Announcement" RESTART IDENTITY CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "Vacation" RESTART IDENTITY CASCADE`;
 }
 
 async function main() {
