@@ -44,6 +44,16 @@ model Lesson {
   exams       Exam[]
   assignments Assignment[]
   attendances Attendance[]
+
+  repeatInterval Int? // in weeks (1 = weekly, 2 = biweekly)
+  repeatUntil    DateTime? // when to stop repeating
+}
+
+model Vacation {
+  id        Int      @id @default(autoincrement())
+  label     String
+  startDate DateTime
+  endDate   DateTime
 }
 
 model Exam {
