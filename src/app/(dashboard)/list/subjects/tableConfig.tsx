@@ -1,7 +1,13 @@
-import Link from "next/link";
-import { Eye, Trash } from "lucide-react";
+import { Role } from "@prisma/client";
 
 import type { SubjectList } from "@/utils/models/tables";
+import { ModalWithTrigger } from "@/components/features";
+import { DeleteButton, SubjectForm, UpdateButton } from "@/components/entities";
+import { prisma } from "@/prisma/prismaClient";
+
+const subjectTeachers = await prisma.teacher.findMany({
+  select: { id: true, name: true, surname: true },
+});
 
 const columns = [
   {
@@ -19,7 +25,7 @@ const columns = [
   },
 ];
 
-const renderRow = (item: SubjectList) => (
+const renderRow = (item: SubjectList, role: Role) => (
   <tr
     key={item.id}
     className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-secondary-highlight"
@@ -28,20 +34,33 @@ const renderRow = (item: SubjectList) => (
     <td className="hidden px-2 py-0.5 md:table-cell">
       {item.teachers.map((teacher) => teacher.name).join(", ")}
     </td>
-    <td>
-      <div className="flex items-center gap-2">
-        <Link
-          href={`/list/teachers/${item.id}`}
-          className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary"
-        >
-          <Eye size={16} className="stroke-background" />
-        </Link>
-        <button className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-secondary">
-          <Trash size={16} className="stroke-background" />
-        </button>
-      </div>
-    </td>
+    {role === Role.ADMIN && (
+      <td>
+        <div className="flex items-center gap-2">
+          <ModalWithTrigger button={<UpdateButton />}>
+            <SubjectForm
+              type="Update"
+              data={{
+                name: item.name,
+                id: item.id,
+                teachers: subjectTeachers.map((t) => t.id),
+              }}
+            />
+          </ModalWithTrigger>
+          <ModalWithTrigger button={<DeleteButton />}>
+            <SubjectForm
+              type="Delete"
+              data={{
+                name: item.name,
+                id: item.id,
+                teachers: [],
+              }}
+            />
+          </ModalWithTrigger>
+        </div>
+      </td>
+    )}
   </tr>
 );
 
-export { columns, renderRow };
+export { columns, renderRow, subjectTeachers };
