@@ -22,6 +22,10 @@ export const routeAccessMap: RouteAccessMap = {
   "/list/announcements": [Role.ADMIN, Role.TEACHER, Role.STUDENT, Role.PARENT],
 };
 
+export const ROUTES = {
+  SUBJECTS: "/list/subjects",
+};
+
 export const API_ROUTES = {
   GENDERS: "/api/charts/gender",
   ATTENDANCE: "/api/charts/attendance",
