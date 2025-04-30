@@ -1,6 +1,19 @@
+import { prisma } from "@/prisma/prismaClient";
 import { Announcements, BigCalendar } from "@/components/entities";
+import { generateRecurringEvents, getUserSession } from "@/utils/helpers";
 
-export default function TeacherPage() {
+export default async function TeacherPage() {
+  const user = await getUserSession();
+  if (!user) return null;
+
+  const dataRes = await prisma.lesson.findMany({
+    where: {
+      teacherId: user.id,
+    },
+  });
+  const vacations = await prisma.vacation.findMany();
+  const recursiveEvents = generateRecurringEvents(dataRes, vacations);
+
   return (
     <div className="flex flex-1 flex-col gap-4 xl:flex-row">
       <div className="flex flex-col gap-8 xl:w-2/3">
@@ -9,7 +22,7 @@ export default function TeacherPage() {
             Schedule
           </div>
           <div className="max-h-[750px] grow overflow-y-auto">
-            <BigCalendar />
+            <BigCalendar events={recursiveEvents} />
           </div>
         </div>
       </div>
