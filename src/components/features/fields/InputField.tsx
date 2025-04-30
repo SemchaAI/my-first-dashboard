@@ -10,6 +10,7 @@ export const InputField = ({
   label,
   autoComplete,
   type,
+  hidden,
   placeholder = label,
   EyeIcon,
   Icon,
@@ -28,7 +29,7 @@ export const InputField = ({
   };
 
   return (
-    <div className="flex flex-col gap-px">
+    <div className={`${hidden ? "hidden" : "flex flex-col gap-px"}`}>
       <label className="pl-2 text-xs text-text-primary" htmlFor={id}>
         {label}:
       </label>
