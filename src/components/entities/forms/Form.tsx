@@ -26,7 +26,7 @@ export const Form = <T extends FieldValues>({
         onSubmit={form.handleSubmit(onSubmit)}
       >
         {title && (
-          <h1 className="pr-7 text-xl font-semibold text-text-highlight">
+          <h1 className="mb-2 pr-7 text-xl font-semibold text-text-highlight">
             {title}
           </h1>
         )}
