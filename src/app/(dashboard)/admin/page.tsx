@@ -1,10 +1,11 @@
+"use server";
 import {
   Announcements,
   AttendanceChart,
   EventCalendar,
   FinanceChart,
   GenderChart,
-  UserCard,
+  AdminStatisticsCard,
 } from "@/components/entities";
 import { prisma } from "@/prisma/prismaClient";
 
@@ -25,10 +26,26 @@ export default async function AdminPage() {
       <div className="flex w-full flex-col gap-8 lg:w-2/3">
         {/* user cards   */}
         <ul className="flex flex-wrap justify-between gap-4">
-          <UserCard type="admin" date={formatted} total={adminCount} />
-          <UserCard type="teacher" date={formatted} total={teacherCount} />
-          <UserCard type="student" date={formatted} total={studentCount} />
-          <UserCard type="parent" date={formatted} total={parentCount} />
+          <AdminStatisticsCard
+            type="admin"
+            date={formatted}
+            total={adminCount}
+          />
+          <AdminStatisticsCard
+            type="teacher"
+            date={formatted}
+            total={teacherCount}
+          />
+          <AdminStatisticsCard
+            type="student"
+            date={formatted}
+            total={studentCount}
+          />
+          <AdminStatisticsCard
+            type="parent"
+            date={formatted}
+            total={parentCount}
+          />
         </ul>
         {/* MIDDLE CHARTS */}
         <div className="flex flex-col justify-between gap-4 lg:flex-row">
