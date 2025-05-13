@@ -12,8 +12,10 @@ export const InputField = ({
   type,
   hidden,
   placeholder = label,
+  defaultValue,
   EyeIcon,
   Icon,
+  props,
 }: IField) => {
   const {
     register,
@@ -29,7 +31,7 @@ export const InputField = ({
   };
 
   return (
-    <div className={`${hidden ? "hidden" : "flex flex-col gap-px"}`}>
+    <div className={`${hidden ? "hidden" : "flex min-w-60 flex-col gap-px"}`}>
       <label className="pl-2 text-xs text-text-primary" htmlFor={id}>
         {label}:
       </label>
@@ -43,8 +45,9 @@ export const InputField = ({
           className="w-full pt-2.5 pr-5 pb-2.5 pl-10 focus:border-secondary-accent"
           placeholder={placeholder}
           autoComplete={autoComplete}
-          value={rawValue}
           {...register(id)}
+          {...props}
+          defaultValue={defaultValue}
         />
         {EyeIcon && (
           <button
@@ -61,7 +64,7 @@ export const InputField = ({
             )}
           </button>
         )}
-        {!EyeIcon && rawValue ? (
+        {!EyeIcon && rawValue && type !== "date" ? (
           <X
             className="absolute right-3 flex translate-y-1/2 cursor-pointer transition-colors hover:stroke-secondary-accent focus:stroke-secondary-accent"
             onClick={onClickClear}
