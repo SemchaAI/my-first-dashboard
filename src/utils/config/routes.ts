@@ -24,6 +24,8 @@ export const routeAccessMap: RouteAccessMap = {
 
 export const ROUTES = {
   SUBJECTS: "/list/subjects",
+  CLASSES: "/list/classes",
+  TEACHERS: "/list/teachers",
 };
 
 export const API_ROUTES = {
