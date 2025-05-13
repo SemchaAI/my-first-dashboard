@@ -1,6 +1,13 @@
 export { Logo } from "./logo/Logo";
 export { NavMenu } from "./menus/NavMenu";
+
+// cards
+export { AdminStatisticsCard } from "./cards/AdminStatisticsCard";
 export { UserCard } from "./cards/UserCard";
+export { InfoCard } from "./cards/InfoCard";
+export { TeacherCardWrapper } from "./cards/wrappers/TeacherCardWrapper";
+export { StudentCardWrapper } from "./cards/wrappers/StudentCardWrapper";
+
 // charts start
 export { GenderChart } from "./charts/GenderChart";
 export { AttendanceChart } from "./charts/AttendanceChart";
@@ -21,11 +28,9 @@ export { Table } from "./tables/Table";
 // forms start
 // export { TeacherForm } from "./forms/TeacherForm";
 export { SignInForm } from "./forms/SigInForm";
-export { SubjectForm } from "./forms/SubjectForm";
+export { SubjectModalForm } from "./forms/modals/SubjectModalForm";
+export { DeleteModal } from "./forms/modals/DeleteModal";
+export { ClassModalForm } from "./forms/modals/ClassModalForm";
+export { TeacherModalForm } from "./forms/modals/TeacherModalForm";
+export { StudentModalForm } from "./forms/modals/StudentModalForm";
 // forms end
-
-// buttns start
-export { CreateButton } from "./buttons/CreateButton";
-export { UpdateButton } from "./buttons/UpdateButton";
-export { DeleteButton } from "./buttons/DeleteButton";
-// btns end
