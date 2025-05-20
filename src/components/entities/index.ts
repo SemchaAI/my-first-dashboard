@@ -5,7 +5,6 @@ export { NavMenu } from "./menus/NavMenu";
 export { AdminStatisticsCard } from "./cards/AdminStatisticsCard";
 export { UserCard } from "./cards/UserCard";
 export { InfoCard } from "./cards/InfoCard";
-export { TeacherCardWrapper } from "./cards/wrappers/TeacherCardWrapper";
 export { StudentCardWrapper } from "./cards/wrappers/StudentCardWrapper";
 
 // charts start
