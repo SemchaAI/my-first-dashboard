@@ -1,5 +1,6 @@
 import type { Lesson, Vacation } from "@prisma/client";
 import type { IEvent } from "../models/calendar";
+import { prisma } from "@/prisma/prismaClient";
 
 const isVacationTime = (date: Date, vacations: Vacation[]) => {
   return vacations.some(
@@ -60,7 +61,25 @@ export const generateRecurringEvents = (
 
   return events;
 };
-
+export const bigCalendarEvents = async ({
+  type,
+  id,
+}: {
+  type: "teacherId" | "userId";
+  id: string;
+}) => {
+  const dataRes = await prisma.lesson.findMany({
+    where: {
+      //class: { students: { some: { id: user.id } } },
+      ...(type === "teacherId"
+        ? { teacherId: id }
+        : { class: { students: { some: { id } } } }),
+    },
+  });
+  const vacations = await prisma.vacation.findMany();
+  const recursiveEvents = generateRecurringEvents(dataRes, vacations);
+  return recursiveEvents;
+};
 // const getLatestMonday = (): Date => {
 //   const today = new Date();
 //   const dayOfWeek = today.getDay();
