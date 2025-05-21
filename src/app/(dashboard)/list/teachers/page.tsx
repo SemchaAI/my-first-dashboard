@@ -2,7 +2,7 @@ import { Filter, Plus, SortDesc } from "lucide-react";
 import { prisma } from "@/prisma/prismaClient";
 
 import { Pagination, Search } from "@/components/features";
-import { Table } from "@/components/entities";
+import { Table, TeacherModalForm } from "@/components/entities";
 import { columns, renderRow } from "./tableConfig";
 import { getUserSession } from "@/utils/helpers";
 
@@ -37,7 +37,14 @@ export default async function TeachersList({
       user: { select: { email: true, username: true, avatar: true } },
     },
   });
-
+  // const teacherSubjects = await prisma.subject.findMany({
+  //   select: { id: true, name: true },
+  // });
+  // const classList = result.map((item) => ({
+  //   ...item,
+  //   teacherSubjects,
+  // }));
+  const classList = result.map((item) => ({ ...item }));
   return (
     <div className="flex flex-1 flex-col rounded-2xl bg-background p-4">
       {/* TOP */}
@@ -57,9 +64,20 @@ export default async function TeachersList({
             <button className="flex items-center rounded-full bg-tertiary p-2">
               <SortDesc size={14} className="stroke-text-highlight" />
             </button>
-            <button className="flex items-center rounded-full bg-tertiary p-2">
+            {user.role === "ADMIN" && (
+              <TeacherModalForm
+                type="Create"
+                button={
+                  <Plus
+                    size={30}
+                    className="rounded-full bg-tertiary stroke-text-highlight p-2"
+                  />
+                }
+              />
+            )}
+            {/* <button className="flex items-center rounded-full bg-tertiary p-2">
               <Plus size={14} className="stroke-text-highlight" />
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -68,7 +86,7 @@ export default async function TeachersList({
         role={user.role}
         columns={columns}
         renderRow={renderRow}
-        data={result}
+        data={classList}
       />
       {/* pagination */}
       <Pagination count={count} currPage={pageNum} limit={limitNum} />
