@@ -4,6 +4,8 @@ import Image from "next/image";
 import { Eye, Trash } from "lucide-react";
 import { Role } from "@prisma/client";
 import type { TeacherList } from "@/utils/models/tables";
+import { DeleteModal } from "@/components/entities";
+import { deleteTeacher } from "@/utils/actions/forms";
 
 const columns = [
   {
@@ -79,9 +81,18 @@ const renderRow = (item: TeacherList, role: Role) => (
             <Eye size={16} className="stroke-background" />
           </Link>
           {role === "ADMIN" && (
-            <button className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-secondary">
-              <Trash size={16} className="stroke-background" />
-            </button>
+            <DeleteModal
+              title="Delete teacher"
+              confirmText="Are you sure you want to delete this teacher?"
+              button={
+                <Trash
+                  size={30}
+                  className="rounded-full bg-secondary stroke-background p-2"
+                />
+              }
+              id={item.id}
+              onDelete={deleteTeacher}
+            />
           )}
         </div>
       </td>
