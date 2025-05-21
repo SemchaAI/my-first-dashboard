@@ -26,6 +26,7 @@ export const ROUTES = {
   SUBJECTS: "/list/subjects",
   CLASSES: "/list/classes",
   TEACHERS: "/list/teachers",
+  STUDENTS: "/list/students",
 };
 
 export const API_ROUTES = {
