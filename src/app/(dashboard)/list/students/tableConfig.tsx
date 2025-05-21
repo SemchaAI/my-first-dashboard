@@ -1,7 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Eye, Trash } from "lucide-react";
+
 import { Role } from "@prisma/client";
+import { DeleteModal } from "@/components/entities";
+import { deleteStudent } from "@/utils/actions/forms";
 import type { StudentList } from "@/utils/models/tables";
 
 const columns = [
@@ -57,7 +60,7 @@ const renderRow = (item: StudentList, role: Role) => (
     <td className="hidden px-2 py-0.5 md:table-cell">{item.class.name[0]}</td>
     <td className="hidden px-2 py-0.5 md:table-cell">{item.phone}</td>
     <td className="hidden px-2 py-0.5 md:table-cell">{item.address}</td>
-    {role === Role.ADMIN && (
+    {(role === Role.ADMIN || role === Role.TEACHER) && (
       <td>
         <div className="flex items-center gap-2">
           <Link
@@ -66,9 +69,18 @@ const renderRow = (item: StudentList, role: Role) => (
           >
             <Eye size={16} className="stroke-background" />
           </Link>
-          <button className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-secondary">
-            <Trash size={16} className="stroke-background" />
-          </button>
+          <DeleteModal
+            button={
+              <Trash
+                size={30}
+                className="rounded-full bg-secondary stroke-background p-2"
+              />
+            }
+            title="Delete Student"
+            confirmText="Are you sure you want to delete this student?"
+            id={item.id}
+            onDelete={deleteStudent}
+          />
         </div>
       </td>
     )}
