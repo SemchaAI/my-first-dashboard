@@ -2,7 +2,7 @@ import { prisma } from "@/prisma/prismaClient";
 import { Filter, Plus, SortDesc } from "lucide-react";
 
 import { Pagination, Search } from "@/components/features";
-import { Table } from "@/components/entities";
+import { StudentModalForm, Table } from "@/components/entities";
 
 import type { TSearchParams } from "@/utils/models/global";
 import { columns, renderRow } from "./tableConfig";
@@ -54,6 +54,13 @@ export default async function StudentsList({
     },
   });
 
+  // const grades = await prisma.grade.findMany({
+  //   select: { id: true, level: true },
+  // });
+  // const classes = await prisma.class.findMany({
+  //   include: { _count: { select: { students: true } } },
+  // });
+
   return (
     <div className="flex flex-1 flex-col rounded-2xl bg-background p-4">
       {/* TOP */}
@@ -72,9 +79,20 @@ export default async function StudentsList({
             <button className="flex items-center rounded-full bg-tertiary p-2">
               <SortDesc size={14} className="stroke-text-highlight" />
             </button>
-            <button className="flex items-center rounded-full bg-tertiary p-2">
+            {/* <button className="flex items-center rounded-full bg-tertiary p-2">
               <Plus size={14} className="stroke-text-highlight" />
-            </button>
+            </button> */}
+            {user.role === "ADMIN" && (
+              <StudentModalForm
+                type="Create"
+                button={
+                  <Plus
+                    size={30}
+                    className="rounded-full bg-tertiary stroke-text-highlight p-2"
+                  />
+                }
+              />
+            )}
           </div>
         </div>
       </div>
