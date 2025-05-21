@@ -169,12 +169,24 @@
   }
 
   .rbc-event {
-    @apply !border-none !text-text-highlight !p-[10px] md:!my-[10px] !mx-[5px] !w-full !h-auto first:!bg-primary nth-[2n]:!bg-secondary nth-[3n]:!bg-tertiary nth-[4n]:!bg-[#ffc4f4] nth-[5n]:!bg-primary
+    @apply !border-none !text-text-highlight 
+    !p-[10px] 
+    /* md:!my-[10px]  */
+    /* !mx-[5px]  */
+    !ml-[5px] 
+    !w-full 
+    border-none
+    /* !h-auto  */
+    first:!bg-primary nth-[2n]:!bg-secondary nth-[3n]:!bg-tertiary nth-[4n]:!bg-[#ffc4f4] nth-[5n]:!bg-primary
   }
   
   .rbc-event-label{
     @apply text-text-primary !mb-1
   }
+  /* .rbc-event-content,
+  .rbc-event-label{
+    @apply p-2.5 my-2.5 mx-1.5
+  } */
   /* rbc agenda */
   .rbc-agenda-view{
     @apply !flex-1
