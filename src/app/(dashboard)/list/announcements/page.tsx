@@ -1,7 +1,7 @@
-import { Filter, Plus, SortDesc } from "lucide-react";
+import { Filter, SortDesc } from "lucide-react";
 
 import { prisma } from "@/prisma/prismaClient";
-import { FormModal, Pagination, Search } from "@/components/features";
+import { Pagination, Search } from "@/components/features";
 import { Table } from "@/components/entities";
 import { columns, renderRow } from "./tableConfig";
 
@@ -69,7 +69,7 @@ export default async function EventsList({
             <button className="flex items-center rounded-full bg-tertiary p-2">
               <SortDesc size={14} className="stroke-text-highlight" />
             </button>
-            <FormModal
+            {/* <FormModal
               table="announcement"
               trigger={
                 <button className="flex cursor-pointer items-center rounded-full bg-tertiary p-2">
@@ -79,7 +79,7 @@ export default async function EventsList({
               type="update"
               data={result[0]}
               id={1}
-            />
+            /> */}
           </div>
         </div>
       </div>
