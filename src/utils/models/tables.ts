@@ -23,7 +23,11 @@ type AssignmentList = Assignment & {
     teacher: { name: Teacher["name"]; surname: Teacher["surname"] };
   };
 };
-type ClassList = Class & { supervisor: Teacher | null };
+type ClassList = Class & {
+  supervisor: Teacher | null;
+  grades: { id: number; level: number }[];
+  teachers: { id: string; name: string; surname: string }[];
+};
 type EventList = Event & { class: { name: Class["name"] } | null };
 type ExamList = Exam & {
   lesson: {
@@ -54,6 +58,7 @@ type TeacherList = Teacher & {
     email: User["email"];
     avatar: User["avatar"];
   };
+  // teacherSubjects: { id: number; name: string }[];
 };
 type ResultList = {
   id: number;
