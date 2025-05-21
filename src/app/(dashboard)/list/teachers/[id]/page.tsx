@@ -1,123 +1,120 @@
+import Link from "next/link";
+
+import { prisma } from "@/prisma/prismaClient";
 import {
   Announcements,
   BigCalendar,
   PerformancePieChart,
+  // TeacherCardWrapper,
+  TeacherModalForm,
+  UserCard,
 } from "@/components/entities";
-import { Calendar, DropletIcon, Mail, Phone } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import { bigCalendarEvents, getUserSession } from "@/utils/helpers";
+import type { ITeacherResponse } from "@/utils/models/response";
+import { SquarePen } from "lucide-react";
+import { IUserCard } from "@/utils/models/cards";
 
-export default function TeacherPage() {
+export default async function TeacherPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const user = await getUserSession();
+  if (!user) return null;
+  const { id } = await params;
+
+  const teacher: ITeacherResponse | null = await prisma.teacher.findUnique({
+    where: { id },
+    include: {
+      _count: {
+        select: {
+          subjects: true,
+          lessons: true,
+          classes: true,
+        },
+      },
+      user: { select: { email: true, username: true, avatar: true } },
+      subjects: { select: { id: true, name: true } },
+    },
+  });
+  if (!teacher) return null;
+
+  const userFlatStructure: IUserCard = {
+    avatar: teacher.user.avatar,
+    username: teacher.user.username,
+    name: teacher.name,
+    surname: teacher.surname,
+    bloodType: teacher.bloodType,
+    birthday: teacher.birthday,
+    email: teacher.user.email,
+    phone: teacher.phone,
+    //-------------------------
+    statistic: [
+      {
+        title: "Attendance",
+        value: "90%",
+        url: "/static/img/singleAttendance.png",
+      },
+      {
+        title: "Branches",
+        value: teacher._count.subjects,
+        url: "/static/img/singleBranch.png",
+      },
+      {
+        title: "Lessons",
+        value: teacher._count.lessons,
+        url: "/static/img/singleLesson.png",
+      },
+      {
+        title: "Classes",
+        value: teacher._count.classes,
+        url: "/static/img/singleClass.png",
+      },
+    ],
+  };
+  const modalData = {
+    address: teacher.address,
+    birthday: teacher.birthday, // 'YYYY-MM-DD' important for date picker
+    bloodType: teacher.bloodType,
+    email: teacher.user.email,
+    id: teacher.id,
+    img: teacher.user.avatar || undefined,
+    name: teacher.name,
+    password: "",
+    phone: teacher.phone || undefined,
+    sex: teacher.sex,
+    surname: teacher.surname,
+    username: teacher.user.username,
+
+    subjects: teacher.subjects.map((subject) => subject.id.toString()),
+    formType: "Update" as const,
+  };
+
+  // events
+  const events = await bigCalendarEvents({ type: "teacherId", id });
+
   return (
     <div className="flex flex-1 flex-col gap-4 xl:flex-row">
       {/* left */}
       <div className="flex w-full flex-col gap-4 xl:w-2/3">
         {/* teacher main data */}
-        <div className="flex flex-col justify-between gap-4 lg:flex-row">
-          {/* teacher card */}
-          <div className="flex flex-1 gap-4 rounded-md bg-primary px-4 py-6">
-            <div className="w-1/2 sm:w-1/3">
-              <Image
-                src="https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1200"
-                alt=""
-                width={144}
-                height={144}
-                className="aspect-square rounded-full object-cover"
-              />
-            </div>
-            <div className="flex w-1/2 flex-col justify-between gap-4 sm:w-2/3">
-              <div>
-                <h1 className="text-xl font-semibold text-text-highlight">
-                  Leonard Cronin
-                </h1>
-                <p className="text-sm text-text-primary">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                </p>
-              </div>
-              <div className="flex flex-wrap justify-between gap-y-2 text-xs font-medium text-text-highlight">
-                <div className="flex w-full items-center gap-1 md:w-1/2">
-                  <DropletIcon size={14} className="stroke-text-highlight" />
-                  <span>A+</span>
-                </div>
-                <div className="flex w-full items-center gap-1 md:w-1/2">
-                  <Calendar size={14} className="stroke-text-highlight" />
-                  <span>January 2025</span>
-                </div>
-
-                <div className="flex w-full items-center gap-1 md:w-1/2">
-                  <Mail size={14} className="stroke-text-highlight" />
-                  <span>user@gmail.com</span>
-                </div>
-                <div className="flex w-full items-center gap-1 md:w-1/2">
-                  <Phone size={14} className="stroke-text-highlight" />
-                  <span>+373 234 567</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* statistic cardList */}
-          <div className="flex flex-1 flex-wrap gap-4">
-            <div className="flex w-full gap-4 rounded-md bg-background p-4 md:w-[calc(50%-0.5rem)]">
-              <Image
-                src="/static/img/singleAttendance.png"
-                alt=""
-                width={24}
-                height={24}
-                className="h-6 w-6"
-              />
-              <div>
-                <h1 className="text-xl font-semibold">90%</h1>
-                <span className="text-sm text-text-secondary">Attendance</span>
-              </div>
-            </div>
-            <div className="flex w-full gap-4 rounded-md bg-background p-4 md:w-[calc(50%-0.5rem)]">
-              <Image
-                src="/static/img/singleBranch.png"
-                alt=""
-                width={24}
-                height={24}
-                className="h-6 w-6"
-              />
-              <div>
-                <h1 className="text-xl font-semibold">2</h1>
-                <span className="text-sm text-text-secondary">Branches</span>
-              </div>
-            </div>
-            <div className="flex w-full gap-4 rounded-md bg-background p-4 md:w-[calc(50%-0.5rem)]">
-              <Image
-                src="/static/img/singleLesson.png"
-                alt=""
-                width={24}
-                height={24}
-                className="h-6 w-6"
-              />
-              <div>
-                <h1 className="text-xl font-semibold">6</h1>
-                <span className="text-sm text-text-secondary">Lessons</span>
-              </div>
-            </div>
-            <div className="flex w-full gap-4 rounded-md bg-background p-4 md:w-[calc(50%-0.5rem)]">
-              <Image
-                src="/static/img/singleClass.png"
-                alt=""
-                width={24}
-                height={24}
-                className="h-6 w-6"
-              />
-              <div>
-                <h1 className="text-xl font-semibold">6</h1>
-                <span className="text-sm text-text-secondary">Classes</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* <TeacherCardWrapper teacher={{ ...teacher }} role={user.role} /> */}
+        <UserCard user={userFlatStructure}>
+          {user.role === "ADMIN" && (
+            <TeacherModalForm
+              type="Update"
+              button={<SquarePen size={20} className="stroke-text-highlight" />}
+              data={modalData}
+            />
+          )}
+        </UserCard>
         {/* BOTTOM CHART*/}
         <div className="flex flex-1 flex-col rounded-2xl bg-background p-4 not-first:gap-1">
           <div className="text-xl font-semibold text-text-highlight">
             <h1>Teacher&apos;s Schedule</h1>
           </div>
           <div className="max-h-[750px] grow overflow-y-auto">
-            <BigCalendar />
+            <BigCalendar events={events} />
           </div>
         </div>
       </div>
