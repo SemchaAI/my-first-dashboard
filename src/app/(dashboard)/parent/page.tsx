@@ -9,7 +9,7 @@ export default function ParentPage() {
             Schedule (John Doe)
           </div>
           <div className="max-h-[750px] grow overflow-y-auto">
-            <BigCalendar />
+            <BigCalendar events={[]} />
           </div>
         </div>
       </div>
