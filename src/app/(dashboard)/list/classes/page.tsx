@@ -2,16 +2,20 @@ import { Filter, Plus, SortDesc } from "lucide-react";
 
 import { prisma } from "@/prisma/prismaClient";
 import { Pagination, Search } from "@/components/features";
-import { Table } from "@/components/entities";
+import { ClassModalForm, Table } from "@/components/entities";
+import { getUserSession } from "@/utils/helpers";
+import { columns, renderRow } from "./tableConfig";
 
 import type { TSearchParams } from "@/utils/models/global";
-import { columns, renderRow } from "./tableConfig";
+import { Role } from "@prisma/client";
 
 export default async function ClassesList({
   searchParams,
 }: {
   searchParams: TSearchParams;
 }) {
+  const user = await getUserSession();
+  if (!user) return null;
   //query params start
   const {
     page = "1",
@@ -42,6 +46,26 @@ export default async function ClassesList({
     },
   });
 
+  // const classGrades = await prisma.grade.findMany({
+  //   select: { id: true, level: true },
+  // });
+  // const classTeachers = await prisma.teacher.findMany({
+  //   select: { id: true, name: true, surname: true },
+  // });
+  const [classGrades, classTeachers] = await prisma.$transaction([
+    prisma.grade.findMany({
+      select: { id: true, level: true },
+    }),
+    prisma.teacher.findMany({
+      select: { id: true, name: true, surname: true },
+    }),
+  ]);
+  const classList = result.map((item) => ({
+    ...item,
+    teachers: classTeachers,
+    grades: classGrades,
+  }));
+
   return (
     <div className="flex flex-1 flex-col rounded-2xl bg-background p-4">
       {/* TOP */}
@@ -61,18 +85,33 @@ export default async function ClassesList({
             <button className="flex items-center rounded-full bg-tertiary p-2">
               <SortDesc size={14} className="stroke-text-highlight" />
             </button>
-            <button className="flex items-center rounded-full bg-tertiary p-2">
+            {/* <button className="flex items-center rounded-full bg-tertiary p-2">
               <Plus size={14} className="stroke-text-highlight" />
-            </button>
+            </button> */}
+            {user.role === Role.ADMIN && (
+              <ClassModalForm
+                type="Create"
+                button={
+                  <Plus
+                    size={30}
+                    className="rounded-full bg-tertiary stroke-text-highlight p-2"
+                  />
+                }
+                data={{
+                  grades: classGrades,
+                  teachers: classTeachers,
+                }}
+              />
+            )}
           </div>
         </div>
       </div>
       {/* list */}
       <Table
-        role={"ADMIN"}
+        role={user.role}
         columns={columns}
         renderRow={renderRow}
-        data={result}
+        data={classList}
       />
       {/* pagination */}
       <Pagination currPage={pageNum} count={count} limit={limitNum} />
