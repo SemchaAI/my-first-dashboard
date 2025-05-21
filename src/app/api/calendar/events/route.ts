@@ -13,7 +13,6 @@ export async function GET(req: NextRequest) {
     // Extract query parameters
     const date = searchParams.get("date") || "";
     const parsedDate = new Date(Date.parse(date));
-    console.log(date);
     const data = await prisma.event.findMany({
       where: {
         startTime: {
