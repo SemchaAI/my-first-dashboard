@@ -1,3 +1,4 @@
 export { getUserSession } from "./getUserSession";
-export { generateRecurringEvents } from "./bigCalendar";
+export { bigCalendarEvents } from "./bigCalendar";
+
 export { fetcher } from "./fetcher";
