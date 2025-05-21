@@ -1,7 +1,8 @@
-import Link from "next/link";
-import { Eye, Trash } from "lucide-react";
+import { Settings, Trash } from "lucide-react";
 import { Role } from "@prisma/client";
 import type { ClassList } from "@/utils/models/tables";
+import { ClassModalForm, DeleteModal } from "@/components/entities";
+import { deleteClass } from "@/utils/actions/forms";
 
 const columns = [
   {
@@ -43,16 +44,36 @@ const renderRow = (item: ClassList, role: Role) => (
     {role === Role.ADMIN && (
       <td>
         <div className="flex items-center gap-2">
-          <Link
-            href={`/list/teachers/${item.id}`}
-            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-primary"
-          >
-            <Eye size={16} className="stroke-background" />
-          </Link>
-
-          <button className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-secondary">
-            <Trash size={16} className="stroke-background" />
-          </button>
+          <ClassModalForm
+            type="Update"
+            button={
+              <Settings
+                size={30}
+                className="rounded-full bg-primary stroke-background p-2"
+              />
+            }
+            data={{
+              name: item.name,
+              id: item.id,
+              capacity: item.capacity,
+              grades: item.grades,
+              gradeId: item.gradeId,
+              supervisorId: item.supervisor?.id,
+              teachers: item.teachers,
+            }}
+          />
+          <DeleteModal
+            button={
+              <Trash
+                size={30}
+                className="rounded-full bg-secondary stroke-background p-2"
+              />
+            }
+            id={item.id}
+            title="Delete class"
+            confirmText="Are you sure you want to delete this class?"
+            onDelete={deleteClass}
+          />
         </div>
       </td>
     )}
