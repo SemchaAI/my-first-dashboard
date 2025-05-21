@@ -1,24 +1,14 @@
-import dynamic from "next/dynamic";
-import { Filter, SortDesc } from "lucide-react";
+import { Filter, Plus, SortDesc } from "lucide-react";
 
 import { prisma } from "@/prisma/prismaClient";
-import { ModalWithTrigger, Pagination, Search } from "@/components/features";
-import { CreateButton, Table } from "@/components/entities";
+import { Pagination, Search } from "@/components/features";
+import { Table } from "@/components/entities";
+import { SubjectModalForm } from "@/components/entities";
 import { getUserSession } from "@/utils/helpers";
-import { columns, renderRow, subjectTeachers } from "./tableConfig";
+import { columns, renderRow } from "./tableConfig";
 
 import type { TSearchParams } from "@/utils/models/global";
 import { Role } from "@prisma/client";
-
-const SubjectForm = dynamic(
-  () =>
-    import("@/components/entities/forms/SubjectForm").then(
-      (mod) => mod.SubjectForm,
-    ),
-  {
-    loading: () => <h1>Loading...</h1>,
-  },
-);
 
 export default async function SubjectsList({
   searchParams,
@@ -52,6 +42,10 @@ export default async function SubjectsList({
     },
   });
 
+  const subjectTeachers = await prisma.teacher.findMany({
+    select: { id: true, name: true, surname: true },
+  });
+
   return (
     <div className="flex flex-1 flex-col rounded-2xl bg-background p-4">
       {/* TOP */}
@@ -72,16 +66,21 @@ export default async function SubjectsList({
               <SortDesc size={14} className="stroke-text-highlight" />
             </button>
             {user.role === Role.ADMIN && subjectTeachers && (
-              <ModalWithTrigger button={<CreateButton />}>
-                <SubjectForm
-                  type="Create"
-                  data={{
-                    name: "",
-                    id: undefined,
-                    teachers: subjectTeachers.map((t) => t.id),
-                  }}
-                />
-              </ModalWithTrigger>
+              // modal with trigger
+              <SubjectModalForm
+                type="Create"
+                button={
+                  <Plus
+                    size={30}
+                    className="rounded-full bg-tertiary stroke-text-highlight p-2"
+                  />
+                }
+                data={{
+                  name: "",
+                  id: undefined,
+                  teachers: subjectTeachers.map((t) => t.id),
+                }}
+              />
             )}
           </div>
         </div>
